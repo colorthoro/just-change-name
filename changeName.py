@@ -83,11 +83,12 @@ def work(path: Path):
                 link_now = link_list[i]
         if control == '':
             print('\n新文件名如下：\n')
-            print(new_name)
+            print(f'[{old_name}] --> [{new_name}]')
             control = input('\n按回车确认修改，按n回车跳过当前修改，按空格回车确认所有修改...\n')
         else:
-            print(new_name)
+            print(f'[{old_name}] --> [{new_name}]')
         if control.lower() == 'n':
+            print('已取消')
             control = ''
             continue
         child.rename(child.with_name(new_name))
