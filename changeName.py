@@ -73,18 +73,23 @@ def work(path: Path):
                     new_name_list[index] = old_name_list[num]
         new_name = new_name_list[0]
         link_now = link_list[0]
-        for i in range(1, len(new_name_list) - 1):
-            new_name += ('' if new_name_list[i] ==
-                         '' else link_now) + new_name_list[i]
+        for i in range(1, len(new_name_list)):
+            if i == len(new_name_list) - 1:
+                new_name += '.' + new_name_list[i]
+            else:
+                new_name += ('' if new_name_list[i] ==
+                             '' else link_now) + new_name_list[i]
             if i < len(link_list):
                 link_now = link_list[i]
-        new_name += '.' + new_name_list[-1]
         if control == '':
             print('\n新文件名如下：\n')
             print(new_name)
-            control = input('\n按回车确认修改，按空格回车确认所有修改...\n')
+            control = input('\n按回车确认修改，按n回车跳过当前修改，按空格回车确认所有修改...\n')
         else:
             print(new_name)
+        if control.lower() == 'n':
+            control = ''
+            continue
         child.rename(child.with_name(new_name))
         count += 1
 
