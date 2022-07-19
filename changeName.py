@@ -34,6 +34,7 @@ def work(path: Path):
         '可以直接填充新的部分（以<>括起待填充的内容），\n'
         '<>中的*会替换为数字递增填充，以旧文件名排序，\n'
         '<>中仍然可以以 "/位置号/" 来引入旧文件名某部分内容，\n'
+        '若某个部分以 ":L" 结尾则该部分转换为小写、":U" 转换为大写，\n'
         '不同部分以空格间隔开来：\n'
     )
     reorder_list = reorder.split()
@@ -47,6 +48,11 @@ def work(path: Path):
 
     count = 0
     control = ''
+    colonFuncId = (':L', ':U')
+    colonFunc = {
+        'L': lambda x: x.lower(),
+        'U': lambda x: x.upper(),
+    }
     for child in sorted(path.iterdir()):
         if child.is_dir():
             continue
@@ -54,8 +60,13 @@ def work(path: Path):
         if old_name in own_name_list:
             continue
         old_name_list = re.split(split_pat, old_name)
+
         new_name_list = list(reorder_list)
         for index, item in enumerate(reorder_list):
+            id = 0
+            if item.endswith(colonFuncId):
+                id = item[-1]
+                item = item[:-2]
             if item.startswith('<') and item.endswith('>'):
                 item = item[1:-1]
                 temp = item.split('/')
@@ -72,6 +83,8 @@ def work(path: Path):
                 num = int(item) - 1
                 if num in range(len(old_name_list)):
                     new_name_list[index] = old_name_list[num]
+            if id:
+                new_name_list[index] = colonFunc[id](new_name_list[index])
         new_name = new_name_list[0]
         link_now = link_list[0]
         for i in range(1, len(new_name_list)):
@@ -82,6 +95,7 @@ def work(path: Path):
                              '' else link_now) + new_name_list[i]
             if i < len(link_list):
                 link_now = link_list[i]
+
         if control == '':
             print('\n新文件名如下：\n')
             print(f'[{old_name}] --> [{new_name}]')
