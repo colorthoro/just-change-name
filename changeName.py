@@ -2,7 +2,8 @@ import os
 import re
 from pathlib import Path
 
-own_name = os.path.splitext(os.path.basename(__file__))[0] + '.exe'
+own_name = os.path.splitext(os.path.basename(__file__))[0]
+own_name_list = [own_name + '.exe', own_name + '.py']
 
 
 def work(path: Path):
@@ -20,7 +21,7 @@ def work(path: Path):
         if child.is_dir():
             continue
         old_name = child.name
-        if old_name == own_name:
+        if old_name in own_name_list:
             continue
         old_name_list = re.split(split_pat, old_name)
         print(old_name_list)
@@ -50,7 +51,7 @@ def work(path: Path):
         if child.is_dir():
             continue
         old_name = child.name
-        if old_name == own_name:
+        if old_name in own_name_list:
             continue
         old_name_list = re.split(split_pat, old_name)
         new_name_list = list(reorder_list)
